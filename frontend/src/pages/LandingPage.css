@@ -5,6 +5,27 @@
   overflow: hidden;
 }
 
+.landing-page-header .landing-page-header-content {
+  position: relative;
+}
+
+.landing-page-header .mobile-menu-toggle {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1001;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: inherit;
+}
+
+.landing-page-header .landing-page-nav {
+  margin-left: auto;
+}
+
 .landing-background-pattern {
   position: absolute;
   top: 0;
