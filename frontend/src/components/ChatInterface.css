@@ -486,6 +486,105 @@
   
   .message-bubble {
     max-width: 85%;
+    padding: 10px 14px;
+  }
+  
+  .message-input-container {
+    padding: 12px 15px;
+  }
+  
+  .message-input-wrapper {
+    padding: 6px 14px;
+  }
+  
+  .send-button {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .media-container {
+    max-width: 250px;
+  }
+  
+  .file-container {
+    max-width: 250px;
+    padding: 12px;
+  }
+  
+  .audio-container {
+    min-width: 180px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .messages-container {
+    padding: 12px;
+  }
+  
+  .message-bubble {
+    max-width: 90%;
+    padding: 8px 12px;
+    border-radius: 14px;
+  }
+  
+  .message-input-container {
+    padding: 10px 12px;
+  }
+  
+  .message-input-wrapper {
+    padding: 6px 12px;
+  }
+  
+  .message-input {
+    font-size: 14px;
+  }
+  
+  .send-button {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .media-container {
+    max-width: 200px;
+  }
+  
+  .file-container {
+    max-width: 200px;
+    padding: 10px;
+  }
+  
+  .audio-container {
+    min-width: 160px;
+    padding: 8px;
+  }
+  
+  .message-text-content {
+    font-size: 14px;
+  }
+}
+
+/* Improve touch targets for chat */
+@media (max-width: 768px) {
+  .send-button,
+  .download-button,
+  .message-input-icon {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .message-input {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 768px) {
+  .messages-container {
+    padding: 15px;
+  }
+  
+  .message-bubble {
+    max-width: 85%;
     border-radius: 16px;
   }
   

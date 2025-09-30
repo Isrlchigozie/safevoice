@@ -366,6 +366,155 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .security-header-content {
+    padding: 0 15px;
+  }
+  
+  .security-hero {
+    padding: 140px 0 80px;
+  }
+  
+  .security-hero-content {
+    padding: 0 15px;
+  }
+  
+  .security-hero-title {
+    font-size: 2.2rem;
+    line-height: 1.3;
+  }
+  
+  .security-hero-description {
+    font-size: 1.1rem;
+    line-height: 1.5;
+  }
+  
+  .security-badges {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .security-badge {
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  
+  .security-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .security-layer-card {
+    padding: 25px 20px;
+  }
+  
+  .layer-icon {
+    font-size: 3rem;
+  }
+  
+  .commitment-content {
+    padding: 0 15px;
+  }
+  
+  .commitment-point {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+  
+  .point-icon {
+    font-size: 2.5rem;
+  }
+  
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .cta-button {
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  
+  /* Mobile Navigation Fix */
+  .security-mobile-nav-content {
+    width: 85%;
+    max-width: 320px;
+    padding: 70px 20px 30px;
+  }
+  
+  .security-mobile-nav-links {
+    gap: 15px;
+  }
+  
+  .security-mobile-nav-link {
+    padding: 15px 0;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .security-hero-title {
+    font-size: 1.8rem;
+  }
+  
+  .security-hero-description {
+    font-size: 1rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .layer-title {
+    font-size: 1.3rem;
+  }
+  
+  .layer-description {
+    font-size: 0.95rem;
+  }
+  
+  .security-mobile-nav-content {
+    width: 90%;
+  }
+  
+  .cta-button {
+    padding: 14px 20px;
+    font-size: 1rem;
+  }
+}
+
+/* Fix horizontal scrolling */
+.security-page {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Improve touch targets */
+@media (max-width: 768px) {
+  .security-nav-link,
+  .security-mobile-nav-link,
+  .cta-button {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .security-mobile-menu-toggle {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
   .security-nav {
     display: none;
   }

@@ -4,6 +4,7 @@ import { setAnonymousToken, loadAnonymousToken } from '../store/chatSlice';
 import ChatInterface from '../components/ChatInterface';
 import AnonymousIdManager from '../components/AnonymousIdManager';
 import './ChatPage.css';
+import '../App.css';
 
 const ChatPage = () => {
   const [conversationId, setConversationId] = useState(null);
@@ -150,6 +151,9 @@ const ChatPage = () => {
               </a>
               <a href="/admin/login" className="chat-mobile-nav-link" onClick={closeMobileMenu}>
                 Admin
+              </a>
+              <a href="/contact" className="chat-mobile-nav-link" onClick={closeMobileMenu}>
+                Contact
               </a>
             </nav>
           </div>

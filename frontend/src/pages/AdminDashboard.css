@@ -564,6 +564,140 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .admin-dashboard-content {
+    height: 100vh;
+    flex-direction: column;
+  }
+  
+  .admin-sidebar {
+    width: 100%;
+    max-width: none;
+    height: 50vh;
+    min-height: 300px;
+  }
+  
+  .admin-main-content {
+    height: 50vh;
+  }
+  
+  .admin-conversation-card {
+    padding: 12px 15px;
+  }
+  
+  .admin-avatar {
+    width: 44px;
+    height: 44px;
+    font-size: 0.8rem;
+  }
+  
+  .admin-conversation-content {
+    min-width: 0;
+  }
+  
+  .admin-last-message {
+    font-size: 0.8rem;
+  }
+  
+  .admin-chat-header {
+    padding: 12px 15px;
+  }
+  
+  .admin-chat-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 0.8rem;
+  }
+  
+  .admin-chat-user-name {
+    font-size: 1rem;
+  }
+  
+  .admin-welcome-content {
+    margin: 20px;
+    padding: 30px 20px;
+  }
+  
+  .admin-welcome-title {
+    font-size: 1.8rem;
+  }
+  
+  .admin-welcome-text {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-sidebar-header {
+    padding: 12px 15px;
+  }
+  
+  .admin-sidebar-title {
+    font-size: 1rem;
+  }
+  
+  .admin-conversation-card {
+    padding: 10px 12px;
+    gap: 12px;
+  }
+  
+  .admin-avatar {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .admin-user-name {
+    font-size: 0.9rem;
+  }
+  
+  .admin-last-message {
+    font-size: 0.75rem;
+  }
+  
+  .admin-chat-header {
+    padding: 10px 12px;
+  }
+  
+  .admin-chat-avatar {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .admin-chat-user-name {
+    font-size: 0.9rem;
+  }
+  
+  .admin-welcome-content {
+    padding: 20px 15px;
+  }
+  
+  .admin-welcome-title {
+    font-size: 1.6rem;
+  }
+  
+  .admin-welcome-icon {
+    font-size: 3rem;
+  }
+}
+
+/* Improve touch targets for admin */
+@media (max-width: 768px) {
+  .admin-conversation-card,
+  .admin-back-button,
+  .admin-chat-action-button,
+  .admin-refresh-button,
+  .admin-logout-button,
+  .admin-logout-button-mobile {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .admin-conversation-card {
+    display: flex;
+    align-items: center;
+  }
+}
+
+@media (max-width: 768px) {
   .admin-dashboard-container {
     height: 100vh;
   }

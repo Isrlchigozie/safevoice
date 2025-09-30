@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { initSocket } from '../utils/socket';
 import ChatInterface from '../components/ChatInterface';
 import './AdminDashboard.css';
+import '../App.css';
 
 const AdminDashboard = () => {
   const [conversations, setConversations] = useState([]);

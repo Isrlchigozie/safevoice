@@ -1,0 +1,54 @@
+/* Global Responsive Improvements */
+* {
+  box-sizing: border-box;
+}
+
+/* Prevent horizontal scrolling on all pages */
+.landing-page-container,
+.security-page,
+.features-page,
+.contact-page,
+.chat-page-container,
+.chat-container,
+.admin-dashboard-container,
+.admin-login-container {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Ensure all interactive elements are touch-friendly on mobile */
+@media (max-width: 768px) {
+  button,
+  a,
+  input[type="submit"],
+  .nav-link,
+  .cta-button,
+  .mobile-nav-link {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Improve text readability on mobile */
+  body {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  input,
+  textarea,
+  select {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* Safe area insets for modern mobile devices */
+@supports(padding: max(0px)) {
+  .landing-page-container,
+  .security-page,
+  .features-page,
+  .contact-page,
+  .chat-page-container,
+  .admin-dashboard-container {
+    padding-left: max(15px, env(safe-area-inset-left));
+    padding-right: max(15px, env(safe-area-inset-right));
+  }
+}

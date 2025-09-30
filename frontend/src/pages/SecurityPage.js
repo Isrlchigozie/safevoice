@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './SecurityPage.css';
+import '../App.css';
 
 const SecurityPage = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -128,6 +129,9 @@ const SecurityPage = () => {
             </Link>
             <Link to="/admin/login" className="security-mobile-nav-link" onClick={closeMobileMenu}>
               Admin
+            </Link>
+            <Link to="/contact" className="security-mobile-nav-link" onClick={closeMobileMenu}>
+              Contact
             </Link>
           </nav>
         </div>

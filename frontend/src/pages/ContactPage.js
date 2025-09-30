@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './ContactPage.css';
 import { FaEnvelope, FaWhatsapp, FaPhoneAlt, FaBuilding } from 'react-icons/fa';
+import '../App.css';
 
 const ContactPage = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

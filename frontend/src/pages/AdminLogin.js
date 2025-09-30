@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { loginSuccess } from '../store/authSlice';
 import './AdminLogin.css';
+import '../App.css';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('admin@test.org');

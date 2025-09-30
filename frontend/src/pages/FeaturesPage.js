@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './FeaturesPage.css';
+import '../App.css';
 
 const FeaturesPage = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -122,6 +123,9 @@ const FeaturesPage = () => {
             </Link>
             <Link to="/admin/login" className="features-mobile-nav-link" onClick={closeMobileMenu}>
               Admin
+            </Link>
+            <Link to="/contact" className="features-mobile-nav-link" onClick={closeMobileMenu}>
+              Contact
             </Link>
           </nav>
         </div>

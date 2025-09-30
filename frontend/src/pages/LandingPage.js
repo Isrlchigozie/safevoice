@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './LandingPage.css';
+import '../App.css';
 
 const LandingPage = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -65,6 +66,9 @@ const LandingPage = () => {
           </button>
           
           <nav className="mobile-nav-links">
+            <Link to="/" className="mobile-nav-link" onClick={closeMobileMenu}>
+              Home
+            </Link>
             <Link to="/features" className="mobile-nav-link" onClick={closeMobileMenu}>
               Features
             </Link>
@@ -73,6 +77,9 @@ const LandingPage = () => {
             </Link>
             <Link to="/admin/login" className="mobile-nav-link" onClick={closeMobileMenu}>
               Admin
+            </Link>
+            <Link to="/contact" className="mobile-nav-link" onClick={closeMobileMenu}>
+              Contact
             </Link>
             <Link to="/chat" className="mobile-nav-button" onClick={closeMobileMenu}>
               Start Chat
