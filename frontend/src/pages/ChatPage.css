@@ -22,7 +22,7 @@
 .chat-page-header {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
-  padding: 20px 0;
+  padding: 0;
   position: fixed;
   width: 100%;
   top: 0;

@@ -102,7 +102,6 @@ const ContactPage = () => {
       <header className="contact-header">
         <div className="contact-header-content">
           <Link to="/" className="contact-logo">
-            <span className="contact-logo-icon">🛡️</span>
             SafeVoice
           </Link>
           
