@@ -103,7 +103,7 @@ const ChatInterface = ({ conversationId, isAdmin = false, anonymousToken = null 
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/chat/conversations/${conversationId}/messages`);
+      const response = await fetch(`https://safevoice2.onrender.com/api/chat/conversations/${conversationId}/messages`);
       const data = await response.json();
       setMessages(data);
     } catch (error) {
@@ -117,7 +117,7 @@ const ChatInterface = ({ conversationId, isAdmin = false, anonymousToken = null 
     
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:5000/api/chat/messages/${messageId}/read`, {
+      const response = await fetch(`https://safevoice2.onrender.com/api/chat/messages/${messageId}/read`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -164,7 +164,7 @@ const ChatInterface = ({ conversationId, isAdmin = false, anonymousToken = null 
     formData.append('messageType', messageType);
 
     try {
-      const response = await fetch('http://localhost:5000/api/uploads/upload', {
+      const response = await fetch('https://safevoice2.onrender.com/api/uploads/upload', {
         method: 'POST',
         body: formData,
       });
@@ -205,7 +205,7 @@ const ChatInterface = ({ conversationId, isAdmin = false, anonymousToken = null 
     };
 
     try {
-      const response = await fetch(`http://localhost:5000/api/chat/conversations/${conversationId}/messages`, {
+      const response = await fetch(`https://safevoice2.onrender.com/api/chat/conversations/${conversationId}/messages`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -334,10 +334,10 @@ const ChatInterface = ({ conversationId, isAdmin = false, anonymousToken = null 
         return (
           <div className="media-container image-container">
             <img 
-              src={`http://localhost:5000${message.media_url}`} 
+              src={`https://safevoice2.onrender.com${message.media_url}`} 
               alt={message.file_name}
               className="media-image"
-              onClick={() => window.open(`http://localhost:5000${message.media_url}`, '_blank')}
+              onClick={() => window.open(`https://safevoice2.onrender.com${message.media_url}`, '_blank')}
             />
             <div className="file-info">
               <div className="file-name">{message.file_name}</div>
@@ -354,7 +354,7 @@ const ChatInterface = ({ conversationId, isAdmin = false, anonymousToken = null 
               className="media-video"
               preload="metadata"
             >
-              <source src={`http://localhost:5000${message.media_url}`} type={message.mime_type} />
+              <source src={`https://safevoice2.onrender.com${message.media_url}`} type={message.mime_type} />
               Your browser does not support the video tag.
             </video>
             <div className="file-info">
@@ -374,7 +374,7 @@ const ChatInterface = ({ conversationId, isAdmin = false, anonymousToken = null 
               controls 
               className="media-audio"
             >
-              <source src={`http://localhost:5000${message.media_url}`} type={message.mime_type} />
+              <source src={`https://safevoice2.onrender.com${message.media_url}`} type={message.mime_type} />
               Your browser does not support the audio tag.
             </audio>
           </div>
@@ -393,7 +393,7 @@ const ChatInterface = ({ conversationId, isAdmin = false, anonymousToken = null 
               </div>
             </div>
             <a 
-              href={`http://localhost:5000${message.media_url}`} 
+              href={`https://safevoice2.onrender.com${message.media_url}`} 
               download={message.file_name}
               className="download-button"
             >

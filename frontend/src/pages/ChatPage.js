@@ -36,7 +36,7 @@ const ChatPage = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/chat/conversations/start', {
+      const response = await fetch('https://safevoice2.onrender.com/api/chat/conversations/start', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ const ChatPage = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/chat/conversations/resume', {
+      const response = await fetch('https://safevoice2.onrender.com/api/chat/conversations/resume', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

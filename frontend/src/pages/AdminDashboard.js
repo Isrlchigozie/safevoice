@@ -144,7 +144,7 @@ const AdminDashboard = () => {
   const fetchConversations = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('http://localhost:5000/api/chat/conversations', {
+      const response = await fetch('https://safevoice2.onrender.com/api/chat/conversations', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -179,7 +179,7 @@ const AdminDashboard = () => {
   const markAsRead = async (conversationId) => {
     try {
       const token = localStorage.getItem('adminToken');
-      await fetch(`http://localhost:5000/api/chat/conversations/${conversationId}/mark-read`, {
+      await fetch(`https://safevoice2.onrender.com/api/chat/conversations/${conversationId}/mark-read`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
