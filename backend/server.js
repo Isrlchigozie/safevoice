@@ -12,7 +12,10 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: [
+      "http://localhost:3000",
+      "https://safevoice2.vercel.app"
+    ],
     methods: ["GET", "POST"]
   }
 });
@@ -21,7 +24,13 @@ const io = socketIo(server, {
 const connectedUsers = new Map();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:3000",
+    "https://safevoice2.vercel.app"
+  ],
+  credentials: true
+}));
 app.use(express.json());
 
 // Make io accessible to routes
