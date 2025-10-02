@@ -20,7 +20,7 @@ const AdminLogin = () => {
     setError('');
 
     try {
-      const response = await fetch('https://safevoice2.onrender.com/api/auth/admin/login', {
+      const response = await fetch('https://safevoice2-heuo.vercel.app/api/auth/admin/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

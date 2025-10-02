@@ -17,8 +17,7 @@ const io = socketIo(server, {
     origin: [
       "http://localhost:3000",
       "https://safevoice2.vercel.app",
-      "https://safevoice2-git-main-isrlchigozies-projects.vercel.app",
-      "https://safevoice2-*.vercel.app"
+      "https://safevoice2-git-main-isrlchigozies-projects.vercel.app"
     ],
     methods: ["GET", "POST"],
     credentials: true
@@ -36,8 +35,7 @@ app.use(cors({
   origin: [
     "http://localhost:3000",
     "https://safevoice2.vercel.app",
-    "https://safevoice2-git-main-isrlchigozies-projects.vercel.app",
-    "https://safevoice2-*.vercel.app"
+    "https://safevoice2-git-main-isrlchigozies-projects.vercel.app"
   ],
   credentials: true
 }));
