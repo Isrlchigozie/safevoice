@@ -42,20 +42,25 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/uploads', uploadRoutes); // NEW: Add upload routes
 
 // Test database connection
-app.get('/api/test-db', async (req, res) => {
+app.get('/api/health', async (req, res) => {
   try {
     const pool = require('./config/database');
-    const result = await pool.query('SELECT NOW() as current_time');
+    const result = await pool.query('SELECT NOW() as time, version() as version');
+    
     res.json({ 
-      success: true, 
-      message: 'Database connection successful',
-      time: result.rows[0].current_time 
+      status: 'OK', 
+      database: 'Connected to Supabase',
+      timestamp: new Date().toISOString(),
+      dbTime: result.rows[0].time,
+      version: result.rows[0].version
     });
   } catch (error) {
+    console.error('Health check failed:', error);
     res.status(500).json({ 
-      success: false, 
-      message: 'Database connection failed',
-      error: error.message 
+      status: 'ERROR', 
+      database: 'Disconnected from Supabase',
+      error: error.message,
+      connectionString: process.env.DATABASE_URL ? 'Set (hidden)' : 'Not set'
     });
   }
 });

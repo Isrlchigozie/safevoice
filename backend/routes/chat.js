@@ -19,14 +19,11 @@ router.post('/conversations/start', async (req, res) => {
 
     // Create conversation
     const conversationResult = await pool.query(
-      'INSERT INTO conversations (user_id, last_message, unread_count, is_closed) VALUES ($1, $2, $3, $4) RETURNING *',
-      [user.id, '', 0, false]
+      'INSERT INTO conversations (user_id, last_message, unread_count, is_closed, organization_id) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [user.id, '', 0, false, 1] // Added organization_id
     );
 
     const conversation = conversationResult.rows[0];
-
-    // NOTE: Do NOT emit conversation_created here because there are no messages yet.
-    // Admin dashboard filters out empty conversations; we'll emit when the first real message appears.
 
     res.json({
       anonymousToken: user.anonymous_token,
