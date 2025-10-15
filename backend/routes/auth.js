@@ -5,7 +5,7 @@ const db = require('../config/mongodb');
 
 const router = express.Router();
 
-// Setup endpoint
+// Setup endpoint - run this first!
 router.post('/setup', async (req, res) => {
   try {
     // Check if admin already exists
@@ -58,7 +58,7 @@ router.post('/admin/login', async (req, res) => {
     // Generate JWT token
     const token = jwt.sign(
       { 
-        adminId: admin._id.toString(),
+        adminId: admin.id,
         organizationId: admin.organization_id,
         role: admin.role 
       },
@@ -69,7 +69,7 @@ router.post('/admin/login', async (req, res) => {
     res.json({
       token,
       admin: {
-        id: admin._id.toString(),
+        id: admin.id,
         email: admin.email,
         role: admin.role,
         organizationId: admin.organization_id
@@ -78,7 +78,7 @@ router.post('/admin/login', async (req, res) => {
 
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error: ' + error.message });
   }
 });
 
