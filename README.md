@@ -87,5 +87,5 @@ Version 2 Completed – fully functional and ready for deployment.
 Author
 
 LiCorp Technologies LTD
-Creating digital solutions that make a difference.
+The Future is Now!
 
