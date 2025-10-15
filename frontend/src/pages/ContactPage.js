@@ -1,20 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './ContactPage.css';
-import { FaEnvelope, FaWhatsapp, FaPhoneAlt, FaBuilding } from 'react-icons/fa';
+import { FaEnvelope, FaPhoneAlt } from 'react-icons/fa';
 import '../App.css';
 
 const ContactPage = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    company: '',
-    subject: '',
-    message: ''
-  });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
+
+  const successRef = useRef(null);
+  const formRef = useRef(null);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -24,54 +21,63 @@ const ContactPage = () => {
     setIsMobileMenuOpen(false);
   };
 
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+  // Scroll to success message when submitted
+  useEffect(() => {
+    if (submitted && successRef.current) {
+      successRef.current.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center' 
+      });
+    }
+  }, [submitted]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
-    // Simulate form submission
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-      setFormData({
-        name: '',
-        email: '',
-        company: '',
-        subject: '',
-        message: ''
+    setError('');
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
       });
-    }, 2000);
+
+      if (response.ok) {
+        setSubmitted(true);
+        form.reset();
+      } else {
+        throw new Error('Form submission failed');
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setError('Failed to send message. Please try again or contact us directly.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-    const contactMethods = [
+  const contactMethods = [
     {
-        icon: <FaEnvelope />,
-        title: 'Email Us',
-        description: 'Send us an email and we\'ll get back to you within 24 hours.',
-        details: 'contact@safevoice.com',
-        action: 'mailto:contact@officiallicorp@gmail.com'
+      icon: <FaEnvelope />,
+      title: 'Email Us',
+      description: 'Send us an email and we\'ll get back to you within 24 hours.',
+      details: 'contact@safevoice.com',
+      action: 'mailto:islchigozie@gmail.com' // Fixed email address
     },
     {
-        icon: <FaWhatsapp color="#25D366" />,
-        title: 'WhatsApp Chat',
-        description: 'Chat with us directly on WhatsApp for quick assistance.',
-        details: '+234 707 941 9739',
-        action: 'https://wa.me/2347079419739'
+      icon: <FaPhoneAlt />,
+      title: 'Sales Team',
+      description: 'Speak with our sales team for enterprise solutions.',
+      details: '+234 707 941 9739',
+      action: 'tel:+2347079419739'
     },
-    {
-        icon: <FaPhoneAlt />,
-        title: 'Sales Team',
-        description: 'Speak with our sales team for enterprise solutions.',
-        details: '+234 707 941 9739',
-        action: 'tel:+2347079419739'
-    },
-    ];
+  ];
 
   const faqs = [
     {
@@ -88,7 +94,7 @@ const ContactPage = () => {
     },
     {
       question: 'Can SafeVoice be customized for different institutions?',
-      answer: 'Absolutely. SafeVoice can be tailored with custom branding, workflows, and access controls to match your organization’s needs — whether you’re a school, hospital, or enterprise.'
+      answer: 'Absolutely. SafeVoice can be tailored with custom branding, workflows, and access controls to match your organization\'s needs — whether you\'re a school, hospital, or enterprise.'
     },
     {
       question: 'What support do you provide?',
@@ -197,7 +203,7 @@ const ContactPage = () => {
       </section>
 
       {/* Contact Form */}
-      <section className="contact-form-section">
+      <section className="contact-form-section" ref={formRef}>
         <div className="container">
           <div className="contact-form-container">
             <div className="contact-form-info">
@@ -224,7 +230,7 @@ const ContactPage = () => {
 
             <div className="contact-form-wrapper">
               {submitted ? (
-                <div className="contact-success-message">
+                <div className="contact-success-message" ref={successRef}>
                   <div className="success-icon">✅</div>
                   <h3>Thank You!</h3>
                   <p>Your message has been sent successfully. Our team will get back to you within 24 hours.</p>
@@ -236,7 +242,18 @@ const ContactPage = () => {
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="contact-form">
+                <form 
+                  onSubmit={handleSubmit}
+                  action="https://formsubmit.co/islchigozie@gmail.com" 
+                  method="POST"
+                  className="contact-form"
+                >
+                  {/* FormSubmit Hidden Fields */}
+                  <input type="hidden" name="_subject" value="New SafeVoice Contact Form Submission" />
+                  <input type="hidden" name="_template" value="table" />
+                  <input type="hidden" name="_captcha" value="false" />
+                  <input type="hidden" name="_next" value={window.location.href + "?success=true"} />
+
                   <div className="form-row">
                     <div className="form-group">
                       <label htmlFor="name" className="form-label">Full Name *</label>
@@ -244,8 +261,6 @@ const ContactPage = () => {
                         type="text"
                         id="name"
                         name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
                         className="form-input"
                         required
                       />
@@ -256,8 +271,6 @@ const ContactPage = () => {
                         type="email"
                         id="email"
                         name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
                         className="form-input"
                         required
                       />
@@ -271,8 +284,6 @@ const ContactPage = () => {
                         type="text"
                         id="company"
                         name="company"
-                        value={formData.company}
-                        onChange={handleInputChange}
                         className="form-input"
                         placeholder="Enter your company name"
                       />
@@ -282,8 +293,6 @@ const ContactPage = () => {
                       <select
                         id="subject"
                         name="subject"
-                        value={formData.subject}
-                        onChange={handleInputChange}
                         className="form-input"
                         required
                       >
@@ -303,14 +312,18 @@ const ContactPage = () => {
                     <textarea
                       id="message"
                       name="message"
-                      value={formData.message}
-                      onChange={handleInputChange}
                       className="form-textarea"
                       placeholder="Tell us about your requirements and how we can help..."
                       rows="6"
                       required
                     ></textarea>
                   </div>
+
+                  {error && (
+                    <div className="contact-error-message">
+                      {error}
+                    </div>
+                  )}
 
                   <button 
                     type="submit" 
