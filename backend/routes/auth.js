@@ -1,11 +1,11 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const db = require('../config/database');
+const db = require('../config/mongodb');
 
 const router = express.Router();
 
-// Setup endpoint - run this first!
+// Setup endpoint
 router.post('/setup', async (req, res) => {
   try {
     // Check if admin already exists
@@ -58,7 +58,7 @@ router.post('/admin/login', async (req, res) => {
     // Generate JWT token
     const token = jwt.sign(
       { 
-        adminId: admin.id, 
+        adminId: admin._id.toString(),
         organizationId: admin.organization_id,
         role: admin.role 
       },
@@ -69,7 +69,7 @@ router.post('/admin/login', async (req, res) => {
     res.json({
       token,
       admin: {
-        id: admin.id,
+        id: admin._id.toString(),
         email: admin.email,
         role: admin.role,
         organizationId: admin.organization_id

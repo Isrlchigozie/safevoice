@@ -28,20 +28,24 @@ app.set('socketio', io);
 app.use('/api/auth', authRoutes);
 app.use('/api/chat', chatRoutes);
 
-// Health check
+// Health check endpoint
 app.get('/api/health', async (req, res) => {
   try {
-    const { db } = require('./config/firebase');
-    await db.listCollections();
+    const { db } = require('./config/database');
+    // Test connection by listing collections
+    const collections = await db().listCollections().toArray();
+    
     res.json({ 
       status: 'OK', 
-      database: 'Firebase Connected',
+      database: 'MongoDB Connected',
+      collections: collections.map(c => c.name),
       timestamp: new Date().toISOString()
     });
   } catch (error) {
+    console.error('Health check failed:', error);
     res.status(500).json({ 
       status: 'ERROR', 
-      database: 'Disconnected',
+      database: 'MongoDB Disconnected',
       error: error.message 
     });
   }
