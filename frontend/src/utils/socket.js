@@ -4,6 +4,8 @@ const SOCKET_URL = 'https://safevoice2-heuo.vercel.app';
 
 export const initSocket = () => {
   return io(SOCKET_URL, {
-    transports: ['polling', 'websocket']
+    transports: ['polling', 'websocket'],
+    withCredentials: true,
+    timeout: 1000,
   });
 };

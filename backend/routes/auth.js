@@ -5,13 +5,20 @@ const db = require('../config/mongodb');
 
 const router = express.Router();
 
-// Setup endpoint - run this first!
+// SETUP ENDPOINT - Run this first!
 router.post('/setup', async (req, res) => {
   try {
+    console.log('🔄 Setting up admin user...');
+    
     // Check if admin already exists
     const existingAdmin = await db.admins.findByEmail('admin@test.org');
     if (existingAdmin) {
-      return res.json({ message: 'Admin already exists' });
+      console.log('✅ Admin already exists');
+      return res.json({ 
+        message: 'Admin already exists',
+        email: 'admin@test.org',
+        password: 'admin123'
+      });
     }
 
     // Create admin with hashed password
@@ -23,6 +30,8 @@ router.post('/setup', async (req, res) => {
       organization_id: 1
     });
 
+    console.log('✅ Admin user created successfully');
+    
     res.json({ 
       success: true,
       message: 'Default admin created successfully',
@@ -32,8 +41,10 @@ router.post('/setup', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Setup error:', error);
-    res.status(500).json({ error: 'Setup failed: ' + error.message });
+    console.error('❌ Setup error:', error);
+    res.status(500).json({ 
+      error: 'Setup failed: ' + error.message 
+    });
   }
 });
 
@@ -46,12 +57,16 @@ router.post('/admin/login', async (req, res) => {
     // Find admin by email
     const admin = await db.admins.findByEmail(email);
     if (!admin) {
+      console.log('❌ Admin not found:', email);
       return res.status(401).json({ error: 'Invalid credentials' });
     }
+
+    console.log('✅ Admin found:', admin.email);
 
     // Check password
     const validPassword = await bcrypt.compare(password, admin.password_hash);
     if (!validPassword) {
+      console.log('❌ Invalid password for:', email);
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
@@ -66,6 +81,8 @@ router.post('/admin/login', async (req, res) => {
       { expiresIn: '24h' }
     );
 
+    console.log('✅ Login successful for:', email);
+    
     res.json({
       token,
       admin: {
@@ -77,8 +94,10 @@ router.post('/admin/login', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ error: 'Internal server error: ' + error.message });
+    console.error('❌ Login error:', error);
+    res.status(500).json({ 
+      error: 'Internal server error: ' + error.message 
+    });
   }
 });
 

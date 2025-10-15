@@ -27,6 +27,12 @@ module.exports = {
       const database = await initDB();
       const user = await database.collection('users').findOne({ anonymous_token: anonymousToken });
       return user ? { ...user, id: user._id.toString() } : null;
+    },
+    
+    findById: async (userId) => {
+      const database = await initDB();
+      const user = await database.collection('users').findOne({ _id: require('mongodb').ObjectId.createFromHexString(userId) });
+      return user ? { ...user, id: user._id.toString() } : null;
     }
   },
 
@@ -59,6 +65,37 @@ module.exports = {
         .next();
       
       return conversation ? { ...conversation, id: conversation._id.toString() } : null;
+    },
+
+    findById: async (conversationId) => {
+      const database = await initDB();
+      const conversation = await database.collection('conversations').findOne({ 
+        _id: require('mongodb').ObjectId.createFromHexString(conversationId) 
+      });
+      return conversation ? { ...conversation, id: conversation._id.toString() } : null;
+    },
+
+    update: async (id, updates) => {
+      const database = await initDB();
+      await database.collection('conversations').updateOne(
+        { _id: require('mongodb').ObjectId.createFromHexString(id) },
+        { 
+          $set: {
+            ...updates,
+            updated_at: new Date()
+          }
+        }
+      );
+    },
+
+    getAll: async () => {
+      const database = await initDB();
+      const conversations = await database.collection('conversations')
+        .find()
+        .sort({ updated_at: -1 })
+        .toArray();
+      
+      return conversations.map(conv => ({ ...conv, id: conv._id.toString() }));
     }
   },
 
@@ -72,6 +109,16 @@ module.exports = {
         is_read: false
       });
       return { id: result.insertedId.toString(), ...messageData };
+    },
+
+    findByConversation: async (conversationId) => {
+      const database = await initDB();
+      const messages = await database.collection('messages')
+        .find({ conversation_id: conversationId })
+        .sort({ created_at: 1 })
+        .toArray();
+      
+      return messages.map(msg => ({ ...msg, id: msg._id.toString() }));
     }
   },
 
