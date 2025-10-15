@@ -41,6 +41,43 @@ router.post('/conversations/start', async (req, res) => {
   }
 });
 
+// Resume conversation route
+router.post('/conversations/resume', async (req, res) => {
+  try {
+    const { anonymousToken } = req.body;
+    
+    if (!anonymousToken) {
+      return res.status(400).json({ error: 'Anonymous token is required' });
+    }
+
+    // Find user by token
+    const user = await db.users.findByToken(anonymousToken);
+    if (!user) {
+      return res.status(404).json({ error: 'Invalid anonymous ID' });
+    }
+
+    // Find conversation
+    let conversation = await db.conversations.findByUserId(user.id, true);
+    if (!conversation) {
+      conversation = await db.conversations.findByUserId(user.id, false);
+    }
+
+    if (!conversation) {
+      return res.status(404).json({ error: 'No conversation found' });
+    }
+
+    res.json({
+      anonymousToken: user.anonymous_token,
+      conversationId: conversation.id,
+      message: 'Conversation resumed successfully'
+    });
+
+  } catch (error) {
+    console.error('Resume conversation error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Simple health check
 router.get('/health', async (req, res) => {
   try {

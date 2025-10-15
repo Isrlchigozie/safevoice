@@ -6,6 +6,7 @@ require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
 const chatRoutes = require('./routes/chat');
+const uploadRoutes = require('./routes/uploads');
 
 const app = express();
 const server = http.createServer(app);
@@ -27,6 +28,7 @@ app.set('socketio', io);
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/uploads', uploadRoutes);
 
 // Health check endpoint
 app.get('/api/health', async (req, res) => {
