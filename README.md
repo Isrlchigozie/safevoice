@@ -1,10 +1,9 @@
-# SafeVoice v2
+# SafeVoice
 
 SafeVoice is a secure, real-time **anonymous communication platform** designed to help people report sensitive issues without fear of exposure.  
-Version 2 introduces improved architecture, stronger encryption, and cleaner UI for a more reliable experience.
 
 
-##  Features
+## Features
 -  **End-to-End Encryption** – all messages remain private.  
 -  **Complete Anonymity** – no personal data collected or stored.  
 -  **Real-Time Chat** – instant messaging with typing indicators.  
@@ -26,7 +25,7 @@ Version 2 introduces improved architecture, stronger encryption, and cleaner UI 
 - WebRTC  
 
 **Database & Infrastructure**  
-- PostgreSQL  
+- Mongodb 
 - Redis  
 
 
@@ -66,11 +65,11 @@ JWT_SECRET=your_secret_key
 
 Deployment
 
-Frontend: Vercel or Netlify
+Frontend: Vercel
 
-Backend: Render or Railway
+Backend: Vercel 
 
-Database: Supabase (Postgres)
+Database: mongodb
 
 Cache: Upstash (Redis)
 
@@ -79,13 +78,12 @@ Cache: Upstash (Redis)
 
 Status
 
-Version 2 Completed – fully functional and ready for deployment.
+Completed – fully functional and deployed.
 
 
 
 
 Author
-
-LiCorp Technologies LTD
-The Future is Now!
+Li
+Royalty|Firebird 
 
