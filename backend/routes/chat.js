@@ -41,6 +41,75 @@ router.post('/conversations/start', async (req, res) => {
   }
 });
 
+// Get messages for a conversation
+router.get('/conversations/:conversationId/messages', async (req, res) => {
+  try {
+    const { conversationId } = req.params;
+    
+    const messages = await db.messages.findByConversation(conversationId);
+    res.json(messages);
+  } catch (error) {
+    console.error('Get messages error:', error);
+    res.status(500).json({ error: 'Failed to fetch messages' });
+  }
+});
+
+// Send a message
+router.post('/conversations/:conversationId/messages', async (req, res) => {
+  try {
+    const { conversationId } = req.params;
+    const { content, isAdminMessage, anonymousToken } = req.body;
+
+    // Verify conversation exists
+    const conversation = await db.conversations.findById(conversationId);
+    if (!conversation) {
+      return res.status(404).json({ error: 'Conversation not found' });
+    }
+
+    // Create message
+    const message = await db.messages.create({
+      conversation_id: conversationId,
+      content: content,
+      is_admin_message: isAdminMessage,
+      message_type: 'text'
+    });
+
+    // Update conversation
+    await db.conversations.update(conversationId, {
+      last_message: content.substring(0, 100),
+      unread_count: isAdminMessage ? 0 : conversation.unread_count + 1
+    });
+
+    res.json(message);
+  } catch (error) {
+    console.error('Send message error:', error);
+    res.status(500).json({ error: 'Failed to send message' });
+  }
+});
+
+// Mark message as read
+router.put('/messages/:messageId/read', async (req, res) => {
+  try {
+    const { messageId } = req.params;
+    
+    const database = await require('../config/mongodb').messages.create({});
+    await database.collection('messages').updateOne(
+      { _id: require('mongodb').ObjectId.createFromHexString(messageId) },
+      { 
+        $set: { 
+          is_read: true,
+          read_at: new Date()
+        }
+      }
+    );
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Mark read error:', error);
+    res.status(500).json({ error: 'Failed to mark as read' });
+  }
+});
+
 // Resume conversation route
 router.post('/conversations/resume', async (req, res) => {
   try {
