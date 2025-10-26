@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { initSocket } from '../utils/socket';
 import ChatInterface from '../components/ChatInterface';
 import './AdminDashboard.css';
 import '../App.css';
@@ -10,9 +9,9 @@ const AdminDashboard = () => {
   const [conversations, setConversations] = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [socket, setSocket] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [showSidebar, setShowSidebar] = useState(!isMobile);
+  const pollingIntervalRef = React.useRef(null);
   
   const { isAuthenticated, admin } = useSelector((state) => state.auth);
   const navigate = useNavigate();
@@ -34,97 +33,20 @@ const AdminDashboard = () => {
       return;
     }
 
-    const newSocket = initSocket();
-    setSocket(newSocket);
-
-    if (admin) {
-      newSocket.emit('join_admin_room', admin.organizationId || 1);
-    }
-
-    // Listen for new conversations with messages
-    newSocket.on('conversation_created', (newConversation) => {
-      if (newConversation.hasMessages) {
-        setConversations(prev => [{
-          id: newConversation.conversationId,
-          anonymous_token: newConversation.anonymousToken,
-          status: 'active',
-          created_at: newConversation.createdAt,
-          last_message: newConversation.lastMessage || 'New conversation started',
-          unread_count: 1,
-          updated_at: new Date().toISOString()
-        }, ...prev]);
-      }
-    });
-
-    // Listen for conversation updates when new messages arrive
-    newSocket.on('conversation_updated', (data) => {
-      if (data.hasMessages) {
-        setConversations(prev => {
-          const existingConv = prev.find(conv => conv.id === data.conversationId);
-          if (existingConv) {
-            return prev.map(conv => 
-              conv.id === data.conversationId ? { 
-                ...conv, 
-                last_message: data.lastMessage,
-                unread_count: conv.unread_count + 1,
-                updated_at: new Date().toISOString()
-              } : conv
-            );
-          } else {
-            // Create new conversation entry if it doesn't exist but has messages
-            return [{
-              id: data.conversationId,
-              anonymous_token: data.anonymousToken,
-              status: 'active',
-              created_at: new Date().toISOString(),
-              last_message: data.lastMessage,
-              unread_count: 1,
-              updated_at: new Date().toISOString()
-            }, ...prev];
-          }
-        });
-      }
-    });
-
-    // Listen for new messages to update last message and timestamp
-    newSocket.on('receive_message', (message) => {
-      if (!message.is_admin_message) {
-        setConversations(prev => {
-          const existingConv = prev.find(conv => conv.id === message.conversation_id);
-          if (existingConv) {
-            return prev.map(conv => 
-              conv.id === message.conversation_id ? { 
-                ...conv, 
-                last_message: message.content,
-                unread_count: conv.unread_count + 1,
-                updated_at: new Date().toISOString()
-              } : conv
-            );
-          } else {
-            // Only add to list if there's an actual message
-            if (message.content && message.content.trim()) {
-              return [{
-                id: message.conversation_id,
-                anonymous_token: message.anonymous_token || 'unknown',
-                status: 'active',
-                created_at: new Date().toISOString(),
-                last_message: message.content,
-                unread_count: 1,
-                updated_at: new Date().toISOString()
-              }, ...prev];
-            }
-            return prev;
-          }
-        });
-      }
-    });
-
+    // Initial fetch
     fetchConversations();
 
+    // Poll for updates every 3 seconds
+    pollingIntervalRef.current = setInterval(() => {
+      fetchConversations();
+    }, 3000);
+
     return () => {
-      newSocket.disconnect();
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+      }
     };
-  }, [isAuthenticated, navigate, admin]);
+  }, [isAuthenticated, navigate]);
 
   const getTimeAgo = (timestamp) => {
     if (!timestamp) return 'Never';
@@ -144,7 +66,7 @@ const AdminDashboard = () => {
   const fetchConversations = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('https://safevoice2.onrender.com/api/chat/conversations', {
+      const response = await fetch('https://safevoice2-heuo.vercel.app/api/chat/conversations', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -152,10 +74,9 @@ const AdminDashboard = () => {
       
       if (response.ok) {
         const data = await response.json();
-        // Filter out conversations without messages and ensure last_message exists
+        // Filter out conversations without messages
         const conversationsWithMessages = data.filter(conv => 
-          conv.last_message && conv.last_message.trim() !== '' && 
-          conv.last_message !== 'New conversation started'
+          conv.last_message && conv.last_message.trim() !== ''
         );
         setConversations(conversationsWithMessages);
       }
@@ -179,7 +100,7 @@ const AdminDashboard = () => {
   const markAsRead = async (conversationId) => {
     try {
       const token = localStorage.getItem('adminToken');
-      await fetch(`https://safevoice2.onrender.com/api/chat/conversations/${conversationId}/mark-read`, {
+      await fetch(`https://safevoice2-heuo.vercel.app/api/chat/conversations/${conversationId}/mark-read`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -202,13 +123,14 @@ const AdminDashboard = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
-    if (socket) socket.disconnect();
+    if (pollingIntervalRef.current) {
+      clearInterval(pollingIntervalRef.current);
+    }
     navigate('/admin/login');
   };
 
   const conversationsWithMessages = conversations.filter(conv => 
-    conv.last_message && conv.last_message.trim() !== '' && 
-    conv.last_message !== 'New conversation started'
+    conv.last_message && conv.last_message.trim() !== ''
   );
   
   const unreadCount = conversationsWithMessages.reduce((sum, conv) => sum + (conv.unread_count || 0), 0);
@@ -300,14 +222,14 @@ const AdminDashboard = () => {
                   >
                     <div className="admin-conversation-avatar">
                       <div className="admin-avatar">
-                        {conversation.anonymous_token.substring(0, 2).toUpperCase()}
+                        {conversation.anonymous_token ? conversation.anonymous_token.substring(0, 2).toUpperCase() : 'AN'}
                       </div>
                     </div>
                     
                     <div className="admin-conversation-content">
                       <div className="admin-conversation-header">
                         <div className="admin-user-name">
-                          User {conversation.anonymous_token}
+                          User {conversation.anonymous_token || 'Anonymous'}
                         </div>
                         <div className="admin-conversation-time">
                           {getTimeAgo(conversation.updated_at)}
@@ -353,11 +275,11 @@ const AdminDashboard = () => {
                 )}
                 <div className="admin-chat-user">
                   <div className="admin-chat-avatar">
-                    {selectedConversation.anonymous_token.substring(0, 2).toUpperCase()}
+                    {selectedConversation.anonymous_token ? selectedConversation.anonymous_token.substring(0, 2).toUpperCase() : 'AN'}
                   </div>
                   <div className="admin-chat-user-info">
                     <h3 className="admin-chat-user-name">
-                      User {selectedConversation.anonymous_token}
+                      User {selectedConversation.anonymous_token || 'Anonymous'}
                     </h3>
                   </div>
                 </div>

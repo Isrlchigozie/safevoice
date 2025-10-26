@@ -1,7 +1,24 @@
 const express = require('express');
 const db = require('../config/mongodb');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
+
+// Middleware to verify admin token
+const verifyAdmin = (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ error: 'No token provided' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key-change-this');
+    req.admin = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+};
 
 // Start new conversation
 router.post('/conversations/start', async (req, res) => {
@@ -41,6 +58,29 @@ router.post('/conversations/start', async (req, res) => {
   }
 });
 
+// Get all conversations (for admin)
+router.get('/conversations', verifyAdmin, async (req, res) => {
+  try {
+    const conversations = await db.conversations.getAll();
+    
+    // Enrich with user data
+    const enrichedConversations = await Promise.all(
+      conversations.map(async (conv) => {
+        const user = await db.users.findById(conv.user_id);
+        return {
+          ...conv,
+          anonymous_token: user?.anonymous_token || 'unknown'
+        };
+      })
+    );
+
+    res.json(enrichedConversations);
+  } catch (error) {
+    console.error('Get conversations error:', error);
+    res.status(500).json({ error: 'Failed to fetch conversations' });
+  }
+});
+
 // Get messages for a conversation
 router.get('/conversations/:conversationId/messages', async (req, res) => {
   try {
@@ -71,13 +111,14 @@ router.post('/conversations/:conversationId/messages', async (req, res) => {
       conversation_id: conversationId,
       content: content,
       is_admin_message: isAdminMessage,
-      message_type: 'text'
+      message_type: 'text',
+      created_at: new Date()
     });
 
     // Update conversation
     await db.conversations.update(conversationId, {
       last_message: content.substring(0, 100),
-      unread_count: isAdminMessage ? 0 : conversation.unread_count + 1
+      unread_count: isAdminMessage ? 0 : (conversation.unread_count || 0) + 1
     });
 
     res.json(message);
@@ -87,12 +128,30 @@ router.post('/conversations/:conversationId/messages', async (req, res) => {
   }
 });
 
+// Mark conversation as read (for admin)
+router.put('/conversations/:conversationId/mark-read', verifyAdmin, async (req, res) => {
+  try {
+    const { conversationId } = req.params;
+    
+    await db.conversations.update(conversationId, {
+      unread_count: 0
+    });
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Mark read error:', error);
+    res.status(500).json({ error: 'Failed to mark as read' });
+  }
+});
+
 // Mark message as read
 router.put('/messages/:messageId/read', async (req, res) => {
   try {
     const { messageId } = req.params;
     
-    const database = await require('../config/mongodb').messages.create({});
+    const { connectDB } = require('../config/database');
+    const database = await connectDB();
+    
     await database.collection('messages').updateOne(
       { _id: require('mongodb').ObjectId.createFromHexString(messageId) },
       { 
